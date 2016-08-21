@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -38,24 +39,34 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public RegisteredTask registerTask(UUID taskId, UUID taskGroupId, String taskName, String taskGroupName) {
+        Objects.requireNonNull(taskId);
+        Objects.requireNonNull(taskGroupId);
+        Objects.requireNonNull(taskName);
+        Objects.requireNonNull(taskGroupName);
         RegisteredTask registeredTask = new RegisteredTask(taskId, taskGroupId, taskName, taskGroupName);
         return registeredTaskRepository.save(registeredTask);
     }
 
     @Override
-    public DoneTask saveTaskDone(UUID taskId, UUID taskGroupId, UUID processId) {
-        DoneTask doneTask = new DoneTask(taskId, taskGroupId, processId);
+    public DoneTask saveTaskDone(UUID taskId, UUID groupId, UUID processId) {
+        Objects.requireNonNull(taskId);
+        Objects.requireNonNull(groupId);
+        Objects.requireNonNull(processId);
+        DoneTask doneTask = new DoneTask(taskId, groupId, processId);
         return doneTasksRepository.save(doneTask);
     }
 
     @Override
-    public boolean areAllTasksDone(UUID taskGroupId, UUID processId) {
-        List<RegisteredTask> registeredTasks = registeredTaskRepository.findAllByTaskGroup(taskGroupId);
-        List<Task> registeredTasksSet = registeredTasks.stream().map(registeredTaskToTaskAdapter::convert)
+    public boolean areAllTasksDone(UUID groupId, UUID processId) {
+        Objects.requireNonNull(groupId);
+        Objects.requireNonNull(processId);
+
+        List<Task> registeredTasksSet = registeredTaskRepository.findAllByTaskGroup(groupId)
+                .stream().map(registeredTaskToTaskAdapter::convert)
                 .collect(Collectors.toList());
 
-        List<DoneTask> doneTasks = doneTasksRepository.findAll(taskGroupId, processId);
-        List<Task> doneTasksSet = doneTasks.stream().map(doneTaskToTaskAdapter::convert)
+        List<Task> doneTasksSet = doneTasksRepository.findAll(groupId, processId)
+                .stream().map(doneTaskToTaskAdapter::convert)
                 .collect(Collectors.toList());
 
         return doneTasksSet.containsAll(registeredTasksSet);
