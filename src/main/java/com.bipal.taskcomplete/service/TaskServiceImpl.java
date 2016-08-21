@@ -48,24 +48,24 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public DoneTask saveTaskDone(UUID taskId, UUID groupId, UUID processId) {
+    public DoneTask saveTaskDone(UUID taskId, UUID taskGroupId, UUID taskProcessGroupId) {
         Objects.requireNonNull(taskId);
-        Objects.requireNonNull(groupId);
-        Objects.requireNonNull(processId);
-        DoneTask doneTask = new DoneTask(taskId, groupId, processId);
+        Objects.requireNonNull(taskGroupId);
+        Objects.requireNonNull(taskProcessGroupId);
+        DoneTask doneTask = new DoneTask(taskId, taskGroupId, taskProcessGroupId);
         return doneTasksRepository.save(doneTask);
     }
 
     @Override
-    public boolean areAllTasksDone(UUID groupId, UUID processId) {
-        Objects.requireNonNull(groupId);
-        Objects.requireNonNull(processId);
+    public boolean areAllTasksDone(UUID taskGroupId, UUID taskProcessGroupId) {
+        Objects.requireNonNull(taskGroupId);
+        Objects.requireNonNull(taskProcessGroupId);
 
-        List<Task> registeredTasksSet = registeredTaskRepository.findAllByTaskGroup(groupId)
+        List<Task> registeredTasksSet = registeredTaskRepository.findAllByTaskGroup(taskGroupId)
                 .stream().map(registeredTaskToTaskAdapter::convert)
                 .collect(Collectors.toList());
 
-        List<Task> doneTasksSet = doneTasksRepository.findAll(groupId, processId)
+        List<Task> doneTasksSet = doneTasksRepository.findAll(taskGroupId, taskProcessGroupId)
                 .stream().map(doneTaskToTaskAdapter::convert)
                 .collect(Collectors.toList());
 

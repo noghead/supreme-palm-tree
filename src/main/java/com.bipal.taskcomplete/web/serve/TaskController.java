@@ -27,11 +27,11 @@ public class TaskController {
 
     @RequestMapping(value = "/register", method = RequestMethod.GET)
     public RegisteredTask registerTask(@RequestParam String taskId,
-                                       @RequestParam String groupId) {
+                                       @RequestParam String taskGroupId) {
         UUID taskUUID = UUID.fromString(taskId);
-        UUID groupUUID = UUID.fromString(groupId);
+        UUID taskGroupUUID = UUID.fromString(taskGroupId);
 
-        RegisteredTask registeredTask = service.registerTask(taskUUID, groupUUID, taskId, groupId);
+        RegisteredTask registeredTask = service.registerTask(taskUUID, taskGroupUUID, taskId, taskGroupId);
 
         logger.log(Level.INFO, "Registered task: " + registeredTask.toString());
         return registeredTask;
@@ -39,22 +39,22 @@ public class TaskController {
 
     @RequestMapping(value = "/taskComplete", method = RequestMethod.GET)
     public void taskComplete(@RequestParam String taskId,
-                             @RequestParam String groupId,
-                             @RequestParam String processId) {
+                             @RequestParam String taskGroupId,
+                             @RequestParam String taskProcessGroupId) {
         UUID taskUUID = UUID.fromString(taskId);
-        UUID groupUUID = UUID.fromString(groupId);
-        UUID processID = UUID.fromString(processId);
+        UUID taskGroupUUID = UUID.fromString(taskGroupId);
+        UUID taskProcessGroupUUID = UUID.fromString(taskProcessGroupId);
 
-        DoneTask doneTask = service.saveTaskDone(taskUUID, groupUUID, processID);
+        DoneTask doneTask = service.saveTaskDone(taskUUID, taskGroupUUID, taskProcessGroupUUID);
         logger.log(Level.INFO, doneTask.toString());
     }
 
     @RequestMapping(value = "/isDone", method = RequestMethod.GET)
-    public boolean taskComplete(@RequestParam String groupId,
-                                @RequestParam String processId) {
-        UUID groupUUID = UUID.fromString(groupId);
-        UUID processID = UUID.fromString(processId);
+    public boolean taskComplete(@RequestParam String taskGroupId,
+                                @RequestParam String taskProcessGroupId) {
+        UUID taskGroupUUID = UUID.fromString(taskGroupId);
+        UUID taskProcessGroupID = UUID.fromString(taskProcessGroupId);
 
-        return  service.areAllTasksDone(groupUUID, processID);
+        return  service.areAllTasksDone(taskGroupUUID, taskProcessGroupID);
     }
 }

@@ -9,7 +9,7 @@ public interface TaskService {
 
     public RegisteredTask registerTask(UUID taskId, UUID taskGroupId, String taskName, String taskGroupName);
 
-    public DoneTask saveTaskDone(UUID taskUUID, UUID taskGroupId, UUID processId);
+    public DoneTask saveTaskDone(UUID taskUUID, UUID taskGroupId, UUID taskProcessGroupId);
 
-    public boolean areAllTasksDone(UUID taskGroupId, UUID processId);
+    public boolean areAllTasksDone(UUID taskGroupId, UUID taskProcessGroupId);
 }
