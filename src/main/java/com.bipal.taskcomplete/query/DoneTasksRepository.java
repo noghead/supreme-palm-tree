@@ -12,6 +12,6 @@ import java.util.UUID;
 public interface DoneTasksRepository extends JpaRepository<DoneTask, UUID> {
 
     @Query("SELECT t FROM done_task t WHERE t.groupId = :groupId AND t.processId = :processId")
-    List<DoneTask> findAll(UUID taskGroupId, UUID processId);
+    List<DoneTask> findAll(@Param("groupId") UUID groupId, @Param("processId") UUID processId);
 
 }

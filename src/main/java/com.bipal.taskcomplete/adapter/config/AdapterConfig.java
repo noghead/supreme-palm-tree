@@ -1,6 +1,7 @@
 package com.bipal.taskcomplete.adapter.config;
 
-import com.bipal.taskcomplete.adapter.TaskToRegisteredTaskAdapter;
+import com.bipal.taskcomplete.adapter.DoneTaskToTaskAdapter;
+import com.bipal.taskcomplete.adapter.RegisteredTaskToTaskAdapter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -8,7 +9,12 @@ import org.springframework.context.annotation.Configuration;
 public class AdapterConfig {
 
     @Bean
-    TaskToRegisteredTaskAdapter taskToRegisteredTaskAdapter(){
-        return new TaskToRegisteredTaskAdapter();
+    RegisteredTaskToTaskAdapter registeredTaskToTaskAdapter(){
+        return new RegisteredTaskToTaskAdapter();
+    }
+
+    @Bean
+    DoneTaskToTaskAdapter doneTaskToTaskAdapter(){
+        return new DoneTaskToTaskAdapter();
     }
 }

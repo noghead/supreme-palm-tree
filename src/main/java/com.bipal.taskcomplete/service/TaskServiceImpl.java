@@ -1,6 +1,7 @@
 package com.bipal.taskcomplete.service;
 
-import com.bipal.taskcomplete.adapter.TaskToRegisteredTaskAdapter;
+import com.bipal.taskcomplete.adapter.DoneTaskToTaskAdapter;
+import com.bipal.taskcomplete.adapter.RegisteredTaskToTaskAdapter;
 import com.bipal.taskcomplete.query.DoneTasksRepository;
 import com.bipal.taskcomplete.query.RegisteredTaskRepository;
 import com.bipal.taskcomplete.query.model.DoneTask;
@@ -19,30 +20,25 @@ public class TaskServiceImpl implements TaskService {
 
     public static Logger logger = Logger.getLogger(TaskServiceImpl.class.getSimpleName());
 
-    private TaskToRegisteredTaskAdapter adapter;
+    private RegisteredTaskToTaskAdapter registeredTaskToTaskAdapter;
+    private DoneTaskToTaskAdapter doneTaskToTaskAdapter;
     private RegisteredTaskRepository registeredTaskRepository;
     private DoneTasksRepository doneTasksRepository;
 
     @Autowired
-    public TaskServiceImpl(TaskToRegisteredTaskAdapter adapter, RegisteredTaskRepository registeredTaskRepository,
+    public TaskServiceImpl(RegisteredTaskToTaskAdapter registeredTaskToTaskAdapter,
+                           DoneTaskToTaskAdapter doneTaskToTaskAdapter,
+                           RegisteredTaskRepository registeredTaskRepository,
                            DoneTasksRepository doneTasksRepository) {
-        this.adapter = adapter;
+        this.registeredTaskToTaskAdapter = registeredTaskToTaskAdapter;
+        this.doneTaskToTaskAdapter = doneTaskToTaskAdapter;
         this.registeredTaskRepository = registeredTaskRepository;
         this.doneTasksRepository = doneTasksRepository;
     }
 
     @Override
-    public List<RegisteredTask> registerTasks(List<Task> groupOfTasks) {
-        List<RegisteredTask> tasksToRegister = groupOfTasks.stream()
-                .map(task -> adapter.convert(task))
-                .collect(Collectors.toList());
-
-        return registeredTaskRepository.save(tasksToRegister);
-    }
-
-    @Override
-    public RegisteredTask registerTask(Task task) {
-        RegisteredTask registeredTask = adapter.convert(task);
+    public RegisteredTask registerTask(UUID taskId, UUID taskGroupId, String taskName, String taskGroupName) {
+        RegisteredTask registeredTask = new RegisteredTask(taskId, taskGroupId, taskName, taskGroupName);
         return registeredTaskRepository.save(registeredTask);
     }
 
@@ -55,8 +51,13 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public boolean areAllTasksDone(UUID taskGroupId, UUID processId) {
         List<RegisteredTask> registeredTasks = registeredTaskRepository.findAllByTaskGroup(taskGroupId);
+        List<Task> registeredTasksSet = registeredTasks.stream().map(registeredTaskToTaskAdapter::convert)
+                .collect(Collectors.toList());
+
         List<DoneTask> doneTasks = doneTasksRepository.findAll(taskGroupId, processId);
-        doneTasks.containsAll(registeredTasks);
-        return true;
+        List<Task> doneTasksSet = doneTasks.stream().map(doneTaskToTaskAdapter::convert)
+                .collect(Collectors.toList());
+
+        return doneTasksSet.containsAll(registeredTasksSet);
     }
 }

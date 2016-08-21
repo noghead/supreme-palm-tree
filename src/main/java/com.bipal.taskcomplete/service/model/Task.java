@@ -1,18 +1,15 @@
 package com.bipal.taskcomplete.service.model;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class Task {
     private final UUID taskId;
     private final UUID groupId;
-    private String taskName;
-    private String groupName;
 
-    public Task(UUID taskId, UUID groupId, String taskName, String groupName) {
+    public Task(UUID taskId, UUID groupId) {
         this.taskId = taskId;
         this.groupId = groupId;
-        this.taskName = taskName;
-        this.groupName = groupName;
     }
 
     public UUID getTaskId() {
@@ -23,19 +20,16 @@ public class Task {
         return groupId;
     }
 
-    public String getTaskName() {
-        return taskName;
-    }
-
-    public void setTaskName(String taskName) {
-        this.taskName = taskName;
-    }
-
-    public String getGroupName() {
-        return groupName;
-    }
-
-    public void setGroupName(String groupName) {
-        this.groupName = groupName;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Task task = (Task) o;
+        return Objects.equals(taskId, task.taskId) &&
+                Objects.equals(groupId, task.groupId);
     }
 }

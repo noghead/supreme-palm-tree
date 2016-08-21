@@ -3,7 +3,6 @@ package com.bipal.taskcomplete.web.serve;
 import com.bipal.taskcomplete.query.model.DoneTask;
 import com.bipal.taskcomplete.query.model.RegisteredTask;
 import com.bipal.taskcomplete.service.TaskService;
-import com.bipal.taskcomplete.service.model.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,13 +28,10 @@ public class TaskController {
     @RequestMapping(value = "/register", method = RequestMethod.GET)
     public RegisteredTask registerTask(@RequestParam String taskId,
                                        @RequestParam String groupId) {
-        String taskName = taskId;//"3456cfc4-7c78-4d70-a2c1-8e8688284ce4";
-        String groupName = groupId;//"7bebbd72-6638-11e6-8b77-86f30ca893d3";
-        UUID taskUUID = UUID.fromString(taskName);
-        UUID groupUUID = UUID.fromString(groupName);
-        Task task = new Task(taskUUID, groupUUID, taskName, groupName);
+        UUID taskUUID = UUID.fromString(taskId);
+        UUID groupUUID = UUID.fromString(groupId);
 
-        RegisteredTask registeredTask = service.registerTask(task);
+        RegisteredTask registeredTask = service.registerTask(taskUUID, groupUUID, taskId, groupId);
 
         logger.log(Level.INFO, "Registered task: " + registeredTask.toString());
         return registeredTask;
