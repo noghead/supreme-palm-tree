@@ -1,6 +1,6 @@
 # task-done-coordinator
 
-The purpose of this project is to create a service that will help determine when a task is done based on when sub-tasks are done.
+A spring boot application that keeps track of groups of tasks to determine when the entire group of tasks are finished.
 
 It will do that in three steps:
 
